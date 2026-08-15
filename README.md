@@ -119,11 +119,6 @@ symlink replaces them. Nothing is uninstalled.
 2. **Privacy & Security > Accessibility** - enable Rectangle.
 3. **Raycast** - sign in, enable Cloud Sync, and take Cmd-Space as its hotkey.
 4. **Hidden Bar** - Cmd-drag menu bar icons left of its divider.
-5. **Git identity** - not managed here:
-   ```sh
-   git config --global user.name  "Your Name"
-   git config --global user.email you@example.com
-   ```
 
 ## Licence
 
