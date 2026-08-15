@@ -1,0 +1,3 @@
+# Every path, one owner. Branch protection on main requires a review from
+# whoever is listed here, so a pull request cannot merge without it.
+* @pavelsdembo
