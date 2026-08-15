@@ -56,10 +56,26 @@ chmod +x "${TMP}/bin/code"
 export CODE_STUB_LOG="${TMP}/installs.txt"
 : > "$CODE_STUB_LOG"
 
-output=$(PATH="${TMP}/bin:$PATH" bash "${ROOT}/steps/vscode.sh" 2>&1) \
+output=$(PATH="${TMP}/bin:$PATH" VSCODE_PROFILE="mac-setup-test" VSCODE_PROFILE_WAIT=1 \
+  bash "${ROOT}/steps/vscode.sh" 2>&1) \
   || fail "vscode.sh exited non-zero with no extensions directory: $output"
 pass "vscode.sh survives a missing ~/.vscode/extensions"
 
 wanted=$(grep -cvE '^\s*(#|$)' "$LIST")
 got=$(grep -c -- '--install-extension' "$CODE_STUB_LOG")
 assert_eq "$got" "$wanted" "every listed extension was installed"
+
+# --- the named profile ---
+# The stub cannot create a profile, which is also what a real failure looks
+# like: VS Code never registers one and the wait times out. That must warn and
+# let the run continue, not take it down.
+assert_contains "$output" "could not create" "an uncreatable profile only warns"
+
+# Nothing may be installed into a profile that does not exist, or the count
+# above stops meaning anything.
+assert_not_contains "$(cat "$CODE_STUB_LOG")" "--profile mac-setup-test --install-extension" \
+  "no extensions are pushed into a profile that was never created"
+
+# The name is the account name, which is what makes it match on a new machine.
+name_line=$(grep -E '^VSCODE_PROFILE=' "${ROOT}/steps/vscode.sh")
+assert_contains "$name_line" 'id -un' "the profile is named after the account"

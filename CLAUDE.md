@@ -27,9 +27,9 @@ it would break, because a rule without one gets reverted.
 - **Fonts are copied, not linked.** macOS font registration is inconsistent
   about following symlinks out of `~/Library/Fonts`.
 
-- **VS Code extensions come from `~/.vscode/extensions`, not
-  `code --list-extensions`**, which reports only the active profile. For the
-  same reason they are not `vscode` entries in the Brewfile. Regenerate with:
+- **The committed extension list comes from `~/.vscode/extensions`**, not
+  `code --list-extensions`, which reports only the active profile. For the same
+  reason they are not `vscode` entries in the Brewfile. Regenerate with:
 
   ```sh
   ls ~/.vscode/extensions | grep -v '^\.' | grep -v '^extensions.json$' \
@@ -37,8 +37,43 @@ it would break, because a rule without one gets reverted.
     | sort -u > home/vscode/vscode-extensions.txt
   ```
 
+- **A new VS Code profile inherits nothing** - no `settings.json`, no
+  extensions, only the shared download cache. So `steps/vscode.sh` links the
+  settings in and installs the list again with `--profile`, which is the one
+  place `--list-extensions` asks the right question.
+
+- **Creating that profile needs a window.** `code --profile <name>` alone
+  answers "Profile not found"; only the folder-opening path creates one. The
+  step opens an empty temp directory, then reads the hashed directory name back
+  out of `globalStorage/storage.json`.
+
+- **VS Code profiles hold no settings in this repo.** Do not add `profiles/*/`:
+  it is absolute paths and timestamps.
+
 - **`brew "node"` is required.** `home/.claude/settings.json` runs its
   statusline through `npx`.
+
+- **The menu bar clock cannot be hidden.** Control Centre gives it only a
+  "Clock Options" sheet, and a hand-written `NSStatusItem Visible Clock` is
+  pruned on the next restart. The analog face is the most compact form there is.
+
+- **Spotlight's glyph is left alone, deliberately.** To hide it the key is
+  `defaults -currentHost write com.apple.Spotlight MenuItemHidden -int 1`, not
+  an `NSStatusItem Visible` key: AppKit owns those and Spotlight deletes its
+  own on every launch.
+
+- **The Cmd-Space unbind writes the whole hotkey entry**, not just `enabled`:
+  a machine that never touched the shortcut has no entry to flip.
+
+- **Oh My Zsh installs with `RUNZSH=no CHSH=no`.** Its installer ends in
+  `exec zsh`, which would hang the run behind a spinner, and `chsh` would ask
+  for a password `task` gives nowhere to appear.
+
+- **`bootstrap.sh` uses nothing from this repo**, `lib/common.sh` included. It
+  is curled onto a machine where the clone has not happened, which is why it
+  exists at all: the repo is private, so Homebrew, `gh` and a sign-in must come
+  first. It duplicates `steps/homebrew.sh` and `steps/github.sh`; that is the
+  price, and the reason it stays thin.
 
 - **Step order lives in `STEPS` in `setup-mac.sh`.** A file in `steps/` that is
   not listed aborts the run. Do not reintroduce numeric filename prefixes.
@@ -47,9 +82,6 @@ it would break, because a rule without one gets reverted.
   It also holds caches, history and session state.
 
 - **Git identity is not in this repo.** `setup-mac.sh` prints the commands.
-
-- **VS Code profiles hold no settings here.** Profiles inherit from the default
-  profile. Do not add `profiles/*/`: it is absolute paths and timestamps.
 
 - **Nothing here uninstalls.** A normal run must stay safe to repeat, and a
   wipe-then-reinstall script is not worth the blast radius: `brew uninstall`

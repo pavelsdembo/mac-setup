@@ -33,13 +33,14 @@ defaults write "$STATS_DOMAIN" LaunchAtLoginNext -bool true
 defaults write "$STATS_DOMAIN" Clock_state -bool true
 defaults write "$STATS_DOMAIN" Disk_state  -bool false
 
-# Battery glyph plus a mini readout, in one view.
-defaults write "$STATS_DOMAIN" Battery_widget -string "battery,mini"
+# The battery glyph on its own. Battery_widget is the list of widgets the
+# module shows, so naming only `battery` is what turns the other four in its
+# Widgets section - mini, label, bar chart, details - off.
+defaults write "$STATS_DOMAIN" Battery_widget -string "battery"
 defaults write "$STATS_DOMAIN" Battery_oneView -bool true
 defaults write "$STATS_DOMAIN" Battery_battery_color -bool true
-defaults write "$STATS_DOMAIN" BAT_mini_label -bool false
 
-# Order of the elements inside the battery widget.
+# Order the elements would take if any of the others were switched back on.
 defaults write "$STATS_DOMAIN" Battery_battery_position        -int 0
 defaults write "$STATS_DOMAIN" Battery_mini_position           -int 1
 defaults write "$STATS_DOMAIN" Battery_label_position          -int 2

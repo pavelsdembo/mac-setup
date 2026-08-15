@@ -52,6 +52,24 @@ position() { printf '%s\n' "$order" | grep -n "^$1$" | cut -d: -f1; }
   || fail "homebrew.sh must run before packages.sh"
 pass "homebrew.sh runs before packages.sh"
 
+# The Automation prompt is a dialog someone has to answer. Asking at the top
+# means it is answered before the long part of the run, not eleven steps in.
+[ "$(position permissions.sh)" -eq 1 ] \
+  || fail "permissions.sh must run first, so the Automation prompt comes up front"
+pass "permissions.sh runs first"
+
+[ "$(position permissions.sh)" -lt "$(position login-items.sh)" ] \
+  || fail "permissions.sh must run before login-items.sh, which needs the grant"
+pass "permissions.sh runs before login-items.sh"
+
+[ "$(position homebrew.sh)" -lt "$(position oh-my-zsh.sh)" ] \
+  || fail "homebrew.sh must run before oh-my-zsh.sh (its installer needs git)"
+pass "homebrew.sh runs before oh-my-zsh.sh"
+
+[ "$(position packages.sh)" -lt "$(position github.sh)" ] \
+  || fail "packages.sh must run before github.sh (it installs gh)"
+pass "packages.sh runs before github.sh"
+
 [ "$(position packages.sh)" -lt "$(position vscode.sh)" ] \
   || fail "packages.sh must run before vscode.sh (it installs the code CLI)"
 pass "packages.sh runs before vscode.sh"

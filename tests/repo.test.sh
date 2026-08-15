@@ -19,3 +19,12 @@ assert_eq "$(head -1 "${ROOT}/AGENTS.md")" "$(head -1 "${ROOT}/CLAUDE.md")" \
 # Git must store it as a symlink (mode 120000), not as a regular file.
 mode=$(git -C "$ROOT" ls-files -s AGENTS.md | cut -d' ' -f1)
 assert_eq "$mode" "120000" "git tracks AGENTS.md as a symlink"
+
+# --- nothing is pinned to one particular Mac ---
+# Every path in here has to resolve on someone else's machine, under a
+# different account name. An absolute /Users/<someone> path is how that breaks,
+# and it is easy to paste one in from a terminal without noticing. -I skips the
+# bundled .ttf files, which are binary. This file is excluded because the
+# pattern it looks for has to appear in it.
+hardcoded=$(git -C "$ROOT" grep -In "/Users/" -- . ':!tests/repo.test.sh' || true)
+assert_eq "$hardcoded" "" "no tracked file hardcodes a /Users/ path"

@@ -33,7 +33,11 @@ assert_eq "$(read_default "$HIDDENBAR" useFullStatusBarOnExpandEnabled)" "0" \
 assert_eq "$(read_default "$STATS" Clock_state)" "1" "clock module on"
 assert_eq "$(read_default "$STATS" Disk_state)"  "0" "disk module off"
 assert_eq "$(read_default "$STATS" LaunchAtLoginNext)" "1" "Stats starts at login"
-assert_eq "$(read_default "$STATS" Battery_widget)" "battery,mini" "battery widget layout"
+assert_eq "$(read_default "$STATS" Battery_widget)" "battery" "battery shows the glyph alone"
+# Battery_widget is a comma-separated list, so a comma means a second widget
+# crept back into the module.
+assert_not_contains "$(read_default "$STATS" Battery_widget)" "," \
+  "no other battery widget is enabled"
 assert_eq "$(read_default "$STATS" Battery_barChart_position)" "3" "battery element order"
 
 # Booleans must be booleans and integers integers, or Stats ignores them.

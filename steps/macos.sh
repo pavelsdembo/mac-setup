@@ -49,9 +49,43 @@ defaults write com.apple.dock show-recents -bool false
 ok "Dock"
 
 
+# 64 is "Show Spotlight search". Raycast wants Cmd-Space, and macOS will not
+# hand it over while Spotlight holds it. The whole entry is written, not just
+# `enabled`: a machine that never touched the shortcut has no entry to flip.
+# The parameters are the ones macOS stores itself - space, key code 49, Cmd.
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 '
+  <dict>
+    <key>enabled</key><false/>
+    <key>value</key>
+    <dict>
+      <key>type</key><string>standard</string>
+      <key>parameters</key>
+      <array>
+        <integer>32</integer>
+        <integer>49</integer>
+        <integer>1048576</integer>
+      </array>
+    </dict>
+  </dict>'
+
+# Symbolic hotkeys are read at login. This is what the Keyboard pane calls when
+# a shortcut changes, and it saves logging out.
+ACTIVATE_SETTINGS="/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings"
+if [ -x "$ACTIVATE_SETTINGS" ]; then
+  "$ACTIVATE_SETTINGS" -u >/dev/null 2>&1 || true
+else
+  warn "activateSettings is gone - log out and back in to free Cmd-Space"
+fi
+ok "Keyboard shortcuts"
+
+
 # Visible = in the menu bar, VisibleCC = inside Control Centre.
 defaults write com.apple.controlcenter "NSStatusItem Visible AirDrop"  -bool false
 defaults write com.apple.controlcenter "NSStatusItem Visible BentoBox" -bool true
+
+# The battery glyph is hidden because Stats draws its own.
+defaults write com.apple.controlcenter "NSStatusItem Visible Battery" -bool false
+
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC WiFi"        -bool true
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC Bluetooth"   -bool true
 defaults write com.apple.controlcenter "NSStatusItem VisibleCC Clock"       -bool true
@@ -60,6 +94,9 @@ defaults write com.apple.controlcenter "NSStatusItem VisibleCC BentoBox-0"  -boo
 # `NSStatusItem Visible Item-N` and icon order are deliberately not set: the
 # index is assigned per machine, and order is stored as screen coordinates.
 
+# Spotlight's glyph and the clock both stay; CLAUDE.md says why. The analog
+# face is the most compact the clock gets.
+#
 # ShowDate is an integer: 0 auto, 1 always, 2 never.
 defaults write com.apple.menuextra.clock IsAnalog                 -bool true
 defaults write com.apple.menuextra.clock ShowAMPM                 -bool true

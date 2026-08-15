@@ -13,9 +13,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
 # Run order. The comments mark the entries whose position matters.
 STEPS=(
+  permissions.sh   # first: the Automation prompt needs answering before login-items.sh
   fonts.sh         # before any app first launches
   homebrew.sh      # puts brew on PATH for everything below
+  oh-my-zsh.sh     # its installer needs the git the Xcode tools bring in
   packages.sh      # installs the apps the steps below configure
+  github.sh        # needs gh from packages.sh
   claude-code.sh
   vscode.sh        # needs the `code` CLI from packages.sh
   macos.sh
@@ -86,11 +89,10 @@ cat <<'EOF'
 Left to do by hand:
 
   1. Privacy & Security > Accessibility: enable Rectangle.
-  2. Raycast: sign in and turn on Cloud Sync. Hotkeys, aliases and
-     snippets live server-side.
+  2. Raycast: sign in, turn on Cloud Sync, and set its hotkey to Cmd-Space,
+     which is now free. Hotkeys, aliases and snippets live server-side.
   3. Hidden Bar: Cmd-drag menu bar icons left of its divider.
-  4. VS Code: recreate any profiles.
-  5. git identity:
+  4. git identity:
        git config --global user.name  "Your Name"
        git config --global user.email you@example.com
 
