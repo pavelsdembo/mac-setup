@@ -1,9 +1,10 @@
-# mac-setup
+![A desk with a MacBook, surrounded by notes listing what this repo installs:
+Homebrew and packages, Zsh with Oh My Zsh, Git and the GitHub CLI, VS Code,
+dotfiles, and macOS tweaks](docs/banner.png)
 
-One command to set up a Mac for AI-assisted development: packages, apps,
-system preferences, and agent configuration.
+## Compatibility
 
-Idempotent. Tested on macOS 26 (Tahoe), Apple Silicon.
+Tested on macOS 26 (Tahoe), Apple Silicon.
 
 ## Usage
 
