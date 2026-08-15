@@ -1,9 +1,4 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(python3 -c ':*)"
-    ]
-  },
   "model": "opus",
   "hooks": {
     "SessionStart": [
@@ -44,6 +39,7 @@
   },
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "theme": "auto",
   "autoCompactEnabled": true,
   "inputNeededNotifEnabled": false
 }
