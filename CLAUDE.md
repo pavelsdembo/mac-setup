@@ -70,10 +70,11 @@ it would break, because a rule without one gets reverted.
   for a password `task` gives nowhere to appear.
 
 - **`bootstrap.sh` uses nothing from this repo**, `lib/common.sh` included. It
-  is curled onto a machine where the clone has not happened, which is why it
-  exists at all: the repo is private, so Homebrew, `gh` and a sign-in must come
-  first. It duplicates `steps/homebrew.sh` and `steps/github.sh`; that is the
-  price, and the reason it stays thin.
+  is curled onto a machine where the clone has not happened yet, which is the
+  whole reason it exists. It duplicates `steps/homebrew.sh` and
+  `steps/github.sh`; that is the price, and the reason it stays thin. It clones
+  with `git`, not `gh`, because `gh` needs a token even for a public repo and
+  its sign-in step is allowed to fail.
 
 - **Step order lives in `STEPS` in `setup-mac.sh`.** A file in `steps/` that is
   not listed aborts the run. Do not reintroduce numeric filename prefixes.

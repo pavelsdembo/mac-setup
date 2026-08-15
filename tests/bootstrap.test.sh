@@ -25,7 +25,7 @@ assert_eq "$sourced" "" "bootstrap.sh sources nothing from the repo"
 # --- the four things that cannot be steps ---
 # Each is here because setup-mac.sh cannot do it: three come before the repo
 # exists, and the clone is what puts it there.
-for needed in "install.sh" "brew install gh" "gh auth login" "gh repo clone"; do
+for needed in "install.sh" "brew install gh" "gh auth login" "git clone"; do
   assert_contains "$(cat "$BOOTSTRAP")" "$needed" "bootstrap.sh does $needed"
 done
 

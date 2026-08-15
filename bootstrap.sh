@@ -6,8 +6,7 @@
 #     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/pavelsdembo/mac-setup/main/bootstrap.sh)"
 #
 # Homebrew, gh, a GitHub sign-in and the clone. These four cannot live in
-# steps/: the repo is private, so none of it is on the machine yet, which is
-# the whole reason this file is fetched on its own.
+# steps/, because none of the repo is on the machine until the last of them.
 #
 # Arguments are passed straight to setup-mac.sh, so `--list` bootstraps and
 # then prints the steps instead of running them.
@@ -22,15 +21,16 @@ DEST="${PWD}/${NAME}"
 # No lib/common.sh: it is inside the repo this script exists to fetch.
 if [ -t 1 ]; then
   _BOLD=$'\033[1m'; _DIM=$'\033[2m'; _GREEN=$'\033[32m'; _RED=$'\033[31m'
-  _RESET=$'\033[0m'
+  _YELLOW=$'\033[33m'; _RESET=$'\033[0m'
 else
-  _BOLD=""; _DIM=""; _GREEN=""; _RED=""; _RESET=""
+  _BOLD=""; _DIM=""; _GREEN=""; _RED=""; _YELLOW=""; _RESET=""
 fi
 
 step() { printf '\n%s%s%s\n' "$_BOLD" "$1" "$_RESET"; }
 ok()   { printf '  %s✓%s %s\n' "$_GREEN" "$_RESET" "$1"; }
 skip() { printf '  %s· %s%s\n' "$_DIM" "$1" "$_RESET"; }
 info() { printf '    %s\n' "$1"; }
+warn() { printf '  %s! %s%s\n' "$_YELLOW" "$1" "$_RESET" >&2; }
 die()  { printf '  %s✗%s %s\n' "$_RED" "$_RESET" "$1" >&2; exit 1; }
 have() { command -v "$1" >/dev/null 2>&1; }
 
@@ -82,11 +82,14 @@ step "GitHub sign-in"
 if gh auth status >/dev/null 2>&1; then
   skip "already signed in as $(gh api user --jq .login 2>/dev/null || printf '?')"
 else
-  # The clone below is the reason this is not optional: the repo is private.
+  # Not fatal: the repo is public, so the clone below does not need it. Signing
+  # in is for everything you do afterwards.
   info "gh will print a one-time code and open your browser"
-  gh auth login --hostname github.com --git-protocol https --web \
-    || die "sign-in did not finish - the repo is private, so the clone needs it"
-  ok "signed in as $(gh api user --jq .login 2>/dev/null || printf '?')"
+  if gh auth login --hostname github.com --git-protocol https --web; then
+    ok "signed in as $(gh api user --jq .login 2>/dev/null || printf '?')"
+  else
+    warn "sign-in did not finish - carrying on, and 'gh auth login' still works later"
+  fi
 fi
 
 
@@ -100,8 +103,9 @@ else
   if [ -e "$DEST" ]; then
     die "${DEST} exists and is not a clone - move it, or cd somewhere else"
   fi
-  # gh rather than git: it already holds the credentials for a private repo.
-  gh repo clone "$REPO" "$DEST" || die "could not clone ${REPO}"
+  # git rather than gh: gh needs a token even for a public repo, and the
+  # sign-in above is allowed to have been skipped.
+  git clone "https://github.com/${REPO}.git" "$DEST" || die "could not clone ${REPO}"
   ok "cloned to ${DEST}"
 fi
 
