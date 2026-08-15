@@ -1,0 +1,37 @@
+{
+    "files.associations": {
+        "Brewfile": "ruby"
+    },
+    "git.confirmSync": false,
+    "workbench.editor.enablePreview": false,
+    "git.suggestSmartCommit": false,
+    "explorer.confirmDragAndDrop": false,
+    "editor.minimap.size": "fit",
+    "editor.fontFamily": "Anonymous Pro",
+    "editor.fontSize": 16,
+    "editor.minimap.enabled": false,
+    "editor.fontVariations": false,
+    "editor.multiCursorModifier": "ctrlCmd",
+    "editor.tabSize": 4,
+    "editor.formatOnPaste": false,
+    "editor.inlineSuggest.enabled": false,
+    "editor.lineHeight": 0,
+    "extensions.ignoreRecommendations": true,
+    "files.autoSave": "onWindowChange",
+    "workbench.colorTheme": "Dracula Theme",
+    "workbench.iconTheme": "vscode-icons",
+    "workbench.sideBar.location": "right",
+    "workbench.statusBar.visible": false,
+    "workbench.startupEditor": "newUntitledFile",
+    "terminal.integrated.fontSize": 16,
+    "editor.fontLigatures": true,
+    "diffEditor.ignoreTrimWhitespace": false,
+    "window.newWindowProfile": "Pasha",
+    "explorer.confirmDelete": false,
+    "python.defaultInterpreterPath": "${userHome}/.local/bin/python3.14",
+    "claudeCode.preferredLocation": "panel",
+    "jupyter.askForKernelRestart": false,
+    "python.languageServer": "Pylance",
+    "notebook.experimental.intellisense.enabled": true
+} 
+

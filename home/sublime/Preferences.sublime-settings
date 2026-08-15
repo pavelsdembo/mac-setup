@@ -1,0 +1,9 @@
+{
+	// Anonymous Pro is installed by steps/fonts.sh from home/fonts/.
+	"font_face": "Anonymous Pro",
+	"font_size": 20,
+
+	// Resolved against Packages/. The scheme is vendored in this repo and
+	// linked into place, so it does not need Package Control.
+	"color_scheme": "Packages/Dracula Color Scheme/Dracula.tmTheme"
+}

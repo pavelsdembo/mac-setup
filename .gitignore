@@ -1,0 +1,5 @@
+.DS_Store
+*.swp
+
+# Written by lib/common.sh when a symlink replaces a real file.
+.mac-setup-backup/
